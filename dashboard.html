@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Sistem Stok - PERURI</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{margin:0;font-family:Arial;background:#f4f6f8}
+.sidebar{width:250px;height:100vh;background:#1f3c88;color:#fff;position:fixed;padding:20px}
+.profile{text-align:center;margin-bottom:30px}
+.profile img{width:80px;height:80px;border-radius:50%;border:3px solid #fff}
+.profile h3{margin:10px 0 5px}
+.profile p{font-size:12px}
+.menu a{display:block;padding:10px;margin-bottom:5px;color:#fff;text-decoration:none;border-radius:5px}
+.menu a:hover{background:rgba(255,255,255,.2)}
+.logout{margin-top:30px;display:block;text-align:center;background:#c0392b;padding:10px;border-radius:5px;color:#fff;text-decoration:none}
+.content{margin-left:270px;padding:20px}
+.card{background:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.1);margin-bottom:20px}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{padding:10px;border:1px solid #ddd;text-align:center}
+th{background:#1f3c88;color:#fff}
+button{padding:8px 15px;border:none;border-radius:5px;background:#1f3c88;color:#fff;cursor:pointer}
+select,input{padding:6px;width:220px;margin:5px 0}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="profile">
+    <img src="https://via.placeholder.com/80">
+    <h3 id="namaUser">FABIAN</h3>
+    <p>Khazanah Produksi Akhir<br>Meterai dan Dokumen Security</p>
+  </div>
+  <div class="menu">
+    <a href="#">Dashboard</a>
+    <a href="#stok">Monitoring Stok</a>
+    <a href="#transaksi">Barang Masuk & Keluar</a>
+    <a href="#tambah">Tambah Barang</a>
+    <a href="#generate">Generate Stok</a>
+  </div>
+  <a href="login.html" class="logout">Logout</a>
+</div>
+
+<div class="content">
+<h1>Dashboard</h1>
+
+<div class="card">
+<h2>Grafik Stok Barang</h2>
+<canvas id="stokChart"></canvas>
+</div>
+
+<!-- MONITORING STOK -->
+<h2 id="stok">Monitoring Stok</h2>
+<table>
+<thead>
+<tr><th>No</th><th>Nama Barang</th><th>Jumlah</th><th>Status</th></tr>
+</thead>
+<tbody id="tabelStok"></tbody>
+</table>
+
+<!-- BARANG MASUK & KELUAR -->
+<div class="card" id="transaksi">
+<h2>Barang Masuk & Keluar</h2>
+<select id="barang"></select><br>
+<input type="number" id="jumlah" placeholder="Jumlah"><br>
+<label>Tanggal Transaksi</label><br>
+<input type="date" id="tanggal"><br><br>
+<button onclick="masuk()">Barang Masuk</button>
+<button onclick="keluar()">Barang Keluar</button>
+</div>
+
+<!-- TAMBAH BARANG -->
+<div class="card" id="tambah">
+<h2>Tambah Barang Baru</h2>
+<input type="text" id="barangBaru" placeholder="Nama Barang"><br>
+<input type="number" id="stokAwal" placeholder="Stok Awal"><br>
+<button onclick="tambahBarang()">Tambah Barang</button>
+</div>
+
+<!-- UPDATE STOK -->
+<div class="card">
+<h2>Update Stok Barang</h2>
+<table>
+<tr><th>Barang</th><th>Stok</th></tr>
+<tbody id="updateStok"></tbody>
+</table>
+</div>
+
+<!-- GENERATE STOK -->
+<div class="card" id="generate">
+<h2>Generate Stok</h2>
+<button onclick="generateStok()">Generate</button>
+<table>
+<tr><th>Barang</th><th>Jumlah</th><th>Status</th></tr>
+<tbody id="hasilGenerate"></tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+namaUser.innerText = localStorage.getItem("username") || "FABIAN";
+
+// DATA STOK AWAL
+let stok = {
+"Sampul 1 Meterai":1200,
+"Sampul 2 Meterai":650,
+"Sampul 1 Prangko":900,
+"Sampul 2 Prangko":400,
+"Kantong Plastik Kemasan Meterai":2000,
+"Doos Meterai dan Prangko":150,
+"Segel Khusus":80
+};
+
+function status(j){
+if(j<=100) return "Hampir Habis";
+if(j<=500) return "Menipis";
+return "Aman";
+}
+
+// RENDER SEMUA
+function renderAll(){
+renderTabel();
+renderUpdate();
+renderSelect();
+updateChart();
+}
+
+// TABEL MONITORING
+function renderTabel(){
+let html="", i=1;
+for(let b in stok){
+html+=`<tr>
+<td>${i++}</td>
+<td>${b}</td>
+<td>${stok[b]}</td>
+<td>${status(stok[b])}</td>
+</tr>`;
+}
+tabelStok.innerHTML=html;
+}
+
+// UPDATE STOK
+function renderUpdate(){
+let html="";
+for(let b in stok){
+html+=`<tr><td>${b}</td><td>${stok[b]}</td></tr>`;
+}
+updateStok.innerHTML=html;
+}
+
+// SELECT BARANG
+function renderSelect(){
+barang.innerHTML="";
+for(let b in stok){
+barang.innerHTML+=`<option>${b}</option>`;
+}
+}
+
+// BARANG MASUK
+function masuk(){
+let b=barang.value;
+let j=parseInt(jumlah.value);
+let t=tanggal.value;
+if(!j||j<=0||!t) return alert("Data belum lengkap");
+stok[b]+=j;
+renderAll();
+}
+
+// BARANG KELUAR
+function keluar(){
+let b=barang.value;
+let j=parseInt(jumlah.value);
+let t=tanggal.value;
+if(!j||j<=0||!t) return alert("Data belum lengkap");
+if(stok[b]<j) return alert("Stok tidak mencukupi");
+stok[b]-=j;
+renderAll();
+}
+
+// TAMBAH BARANG BARU
+function tambahBarang(){
+let nama=barangBaru.value.trim();
+let j=parseInt(stokAwal.value);
+if(!nama||!j||j<=0) return alert("Data tidak valid");
+if(stok[nama]) return alert("Barang sudah ada");
+stok[nama]=j;
+barangBaru.value="";
+stokAwal.value="";
+renderAll();
+}
+
+// GENERATE STOK
+function generateStok(){
+let html="";
+for(let b in stok){
+html+=`<tr>
+<td>${b}</td>
+<td>${stok[b]}</td>
+<td>${status(stok[b])}</td>
+</tr>`;
+}
+hasilGenerate.innerHTML=html;
+}
+
+// CHART
+const ctx=document.getElementById("stokChart");
+let chart=new Chart(ctx,{
+type:"bar",
+data:{labels:Object.keys(stok),datasets:[{label:"Stok",data:Object.values(stok),backgroundColor:"#1f3c88"}]},
+options:{responsive:true}
+});
+
+function updateChart(){
+chart.data.labels=Object.keys(stok);
+chart.data.datasets[0].data=Object.values(stok);
+chart.update();
+}
+
+renderAll();
+</script>
+
+</body>
+</html>

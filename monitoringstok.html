@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoring Stok Bahan Penunjang - PERURI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #1f3c88;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background: #1f3c88;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .status-aman {
+            color: green;
+            font-weight: bold;
+        }
+        .status-menipis {
+            color: orange;
+            font-weight: bold;
+        }
+        .status-habis {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Monitoring Stok Bahan Penunjang Produksi</h2>
+<p>Seksi Khazanah Produksi Akhir Meterai & Dokumen Sekuriti – PERUM PERURI</p>
+
+<table>
+    <tr>
+        <th>No</th>
+        <th>Nama Barang</th>
+        <th>Jumlah Stok</th>
+        <th>Satuan</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Sampul 1 Meterai</td>
+        <td>1.200</td>
+        <td>Lembar</td>
+        <td class="status-aman">Aman</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Sampul 2 Meterai</td>
+        <td>650</td>
+        <td>Lembar</td>
+        <td class="status-menipis">Menipis</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Sampul 1 Prangko</td>
+        <td>900</td>
+        <td>Lembar</td>
+        <td class="status-aman">Aman</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>Sampul 2 Prangko</td>
+        <td>400</td>
+        <td>Lembar</td>
+        <td class="status-menipis">Menipis</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>Kantong Plastik Kemasan Meterai</td>
+        <td>2.000</td>
+        <td>Buah</td>
+        <td class="status-aman">Aman</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>Doos Meterai & Prangko</td>
+        <td>150</td>
+        <td>Box</td>
+        <td class="status-menipis">Menipis</td>
+    </tr>
+    <tr>
+        <td>7</td>
+        <td>Segel Khusus</td>
+        <td>80</td>
+        <td>Roll</td>
+        <td class="status-habis">Hampir Habis</td>
+    </tr>
+</table>
+
+</body>
+</html>
